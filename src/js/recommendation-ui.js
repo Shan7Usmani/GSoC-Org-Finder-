@@ -203,30 +203,30 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUploadToken = 0;
     const DEFAULT_PLACEHOLDER = "Paste your resume or list your skills here (e.g. Python, React, Machine Learning)...";
 
-    function isTokenStale(token) {
+    const isTokenStale = (token) => {
       return token !== currentUploadToken;
-    }
+    };
 
-    function clearInput(input) {
+    const clearInput = (input) => {
       input.value = '';
-    }
+    };
 
-    function validateResumeFile(file) {
+    const validateResumeFile = (file) => {
       if (file.size > 5 * 1024 * 1024) {
         showError("File too large. Please upload a file under 5MB.");
         clearInput(fileUpload);
-        return 'size';
+        return null;
       }
       const fileName = file.name.toLowerCase();
       if (!fileName.endsWith('.pdf') && !fileName.endsWith('.txt')) {
         showError("Unsupported file type. Please upload a .pdf or .txt file.");
         clearInput(fileUpload);
-        return 'type';
+        return null;
       }
       return fileName.endsWith('.pdf') ? 'pdf' : 'txt';
-    }
+    };
 
-    async function parsePdfResume(file, token) {
+    const parsePdfResume = async (file, token) => {
       if (typeof pdfjsLib === 'undefined') {
         showError("PDF library not loaded. Please try again after refreshing the page.");
         clearInput(fileUpload);
@@ -247,8 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
           .join('');
         text += pageText + '\n';
       }
-      resumeText.placeholder = DEFAULT_PLACEHOLDER;
-      if (isTokenStale(token)) return;
+      if (isTokenStale(token)) {
+        resumeText.placeholder = DEFAULT_PLACEHOLDER;
+        return;
+      }
       const parsedText = text.trim();
       if (!parsedText) {
         clearInput(fileUpload);
@@ -258,9 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       resumeText.value = parsedText;
       resumeText.placeholder = DEFAULT_PLACEHOLDER;
-    }
+    };
 
-    function readTextResume(file, token) {
+    const readTextResume = (file, token) => {
       file.text().then(text => {
         if (isTokenStale(token)) return;
         resumeText.value = text;
@@ -270,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInput(fileUpload);
         showError("Failed to read file. Please make sure it's a valid text format.");
       });
-    }
+    };
 
     fileUpload.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -290,8 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
           readTextResume(file, token);
         }
       } catch (err) {
-        resumeText.placeholder = DEFAULT_PLACEHOLDER;
         if (isTokenStale(token)) return;
+        resumeText.placeholder = DEFAULT_PLACEHOLDER;
         console.error("Upload Error:", err);
         clearInput(fileUpload);
         showError("Failed to read PDF file. Please make sure it's a valid PDF.");
