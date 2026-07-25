@@ -73,7 +73,6 @@
     if (typeof pdfjsLib === 'undefined') {
       var s = document.createElement('script');
       s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
-      s.integrity = "sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e";
       s.crossOrigin = "anonymous";
       s.onload = function() {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -3778,7 +3777,6 @@ btn.__orgListenerAttached = true;
         } else {
           compareList[orgPickerTargetSlot] = org.name;
           compareList = compareList.filter(Boolean);
-          globalThis.compareList = compareList;
           renderCompare();
         }
         closeOrgPicker();

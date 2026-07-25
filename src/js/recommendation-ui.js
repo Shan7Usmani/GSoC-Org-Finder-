@@ -247,10 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
           .join('');
         text += pageText + '\n';
       }
-      if (isTokenStale(token)) {
-        resumeText.placeholder = DEFAULT_PLACEHOLDER;
-        return;
-      }
+      if (isTokenStale(token)) return;
       const parsedText = text.trim();
       if (!parsedText) {
         clearInput(fileUpload);
